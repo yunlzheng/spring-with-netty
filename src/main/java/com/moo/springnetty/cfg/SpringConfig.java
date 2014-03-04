@@ -1,6 +1,9 @@
 package com.moo.springnetty.cfg;
 
+import com.moo.springnetty.handlers.KameProtocolInitalizer;
 import com.moo.springnetty.handlers.StringProtocolInitalizer;
+import com.moo.springnetty.handlers.codec.kame.KameDecoder;
+import com.moo.springnetty.handlers.codec.kame.KameEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -47,6 +50,10 @@ public class SpringConfig {
     @Autowired
     @Qualifier("springProtocolInitializer")
     private StringProtocolInitalizer protocolInitalizer;
+
+    @Autowired
+    @Qualifier("KameProtocolInitializer")
+    private KameProtocolInitalizer kameProtocolInitalizer;
 
     @SuppressWarnings("unchecked")
     @Bean(name = "serverBootstrap")
@@ -95,6 +102,16 @@ public class SpringConfig {
     @Bean(name = "stringDecoder")
     public StringDecoder stringDecoder() {
         return new StringDecoder();
+    }
+
+    @Bean(name = "kameEncoder")
+    public KameEncoder kameEncoder() {
+        return new KameEncoder();
+    }
+
+    @Bean(name = "kameDecoder")
+    public KameDecoder kameDecoder() {
+        return new KameDecoder();
     }
 
     /**

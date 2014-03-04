@@ -1,59 +1,58 @@
 package com.moo.springnetty.handlers;
 
+import com.moo.springnetty.handlers.codec.kame.KameDecoder;
+import com.moo.springnetty.handlers.codec.kame.KameEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@Qualifier("springProtocolInitializer")
+@Qualifier("KameProtocolInitializer")
 public class KameProtocolInitalizer extends ChannelInitializer<SocketChannel> {
 
     @Autowired
-    StringDecoder stringDecoder;
+    KameDecoder kameDecoder;
 
     @Autowired
-    StringEncoder stringEncoder;
+    KameEncoder kameEncoder;
 
     @Autowired
-    ServerHandler serverHandler;
+    KameServerHandler KameServerHandler;
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast("decoder", stringDecoder);
-        pipeline.addLast("handler", serverHandler);
-        pipeline.addLast("encoder", stringEncoder);
+        pipeline.addLast("decoder", kameDecoder);
+        pipeline.addLast("handler", KameServerHandler);
+        pipeline.addLast("encoder", kameEncoder);
     }
 
-    public StringDecoder getStringDecoder() {
-        return stringDecoder;
+    public KameDecoder getKameDecoder() {
+        return kameDecoder;
     }
 
-    public void setStringDecoder(StringDecoder stringDecoder) {
-        this.stringDecoder = stringDecoder;
+    public void setKameDecoder(KameDecoder kameDecoder) {
+        this.kameDecoder = kameDecoder;
     }
 
-    public StringEncoder getStringEncoder() {
-        return stringEncoder;
+    public KameEncoder getKameEncoder() {
+        return kameEncoder;
     }
 
-    public void setStringEncoder(StringEncoder stringEncoder) {
-        this.stringEncoder = stringEncoder;
+    public void setKameEncoder(KameEncoder kameEncoder) {
+        this.kameEncoder = kameEncoder;
     }
 
-    public ServerHandler getServerHandler() {
-        return serverHandler;
+    public KameServerHandler getKameServerHandler() {
+        return KameServerHandler;
     }
 
-    public void setServerHandler(ServerHandler serverHandler) {
-        this.serverHandler = serverHandler;
+    public void setKameServerHandler(KameServerHandler kameServerHandler) {
+        KameServerHandler = kameServerHandler;
     }
-
 }
 
