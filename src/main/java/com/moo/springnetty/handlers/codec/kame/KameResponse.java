@@ -1,8 +1,5 @@
 package com.moo.springnetty.handlers.codec.kame;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: zheng
@@ -17,9 +14,6 @@ public class KameResponse {
     private byte extend2;// 用于扩展协议
     private int sessionId;// 会话ID
     private int result;// 结果码
-    private int length;// 数据包长
-    private Map<String, String> values = new HashMap<String, String>();
-    private String ip;
 
     public byte getEncode() {
         return encode;
@@ -69,34 +63,10 @@ public class KameResponse {
         this.result = result;
     }
 
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    public Map<String, String> getValues() {
-        return values;
-    }
-
-    public void setValues(Map<String, String> values) {
-        this.values = values;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
     @Override
     public String toString() {
         return "XLResponse [encode=" + encode + ", encrypt=" + encrypt + ", extend1=" + extend1 + ", extend2=" + extend2
-                + ", sessionid=" + sessionId + ", result=" + result + ", length=" + length + ", values=" + values + ", ip=" + ip + "]";
+                + ", sessionid=" + sessionId + ", result=" + result + "]";
     }
 
 

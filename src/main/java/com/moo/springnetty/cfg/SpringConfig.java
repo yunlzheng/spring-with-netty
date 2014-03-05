@@ -2,8 +2,10 @@ package com.moo.springnetty.cfg;
 
 import com.moo.springnetty.handlers.KameProtocolInitalizer;
 import com.moo.springnetty.handlers.StringProtocolInitalizer;
-import com.moo.springnetty.handlers.codec.kame.KameDecoder;
-import com.moo.springnetty.handlers.codec.kame.KameEncoder;
+import com.moo.springnetty.handlers.codec.kame.KameRequestDecoder;
+import com.moo.springnetty.handlers.codec.kame.KameRequestEncoder;
+import com.moo.springnetty.handlers.codec.kame.KameResponseDecoder;
+import com.moo.springnetty.handlers.codec.kame.KameResponseEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -31,37 +33,41 @@ public class SpringConfig {
 
     @Value("${boss.thread.count}")
     private int bossCount;
-
     @Value("${worker.thread.count}")
     private int workerCount;
-
     @Value("${tcp.port}")
     private int tcpPort;
-
     @Value("${so.keepalive}")
     private boolean keepAlive;
-
     @Value("${so.backlog}")
     private int backlog;
-
     @Value("${log4j.configuration}")
     private String log4jConfiguration;
-
     @Autowired
     @Qualifier("springProtocolInitializer")
     private StringProtocolInitalizer protocolInitalizer;
-
     @Autowired
-    @Qualifier("KameProtocolInitializer")
+    @Qualifier("KameProtocolInitalizer")
     private KameProtocolInitalizer kameProtocolInitalizer;
+
+    /**
+     * Necessary to make the Value annotations work.
+     *
+     * @return
+     */
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @SuppressWarnings("unchecked")
     @Bean(name = "serverBootstrap")
     public ServerBootstrap bootstrap() {
+
         ServerBootstrap b = new ServerBootstrap();
         b.group(bossGroup(), workerGroup())
                 .channel(NioServerSocketChannel.class)
-                .childHandler(protocolInitalizer);
+                .childHandler(kameProtocolInitalizer);
         Map<ChannelOption<?>, Object> tcpChannelOptions = tcpChannelOptions();
         Set<ChannelOption<?>> keySet = tcpChannelOptions.keySet();
         for (@SuppressWarnings("rawtypes")
@@ -102,26 +108,6 @@ public class SpringConfig {
     @Bean(name = "stringDecoder")
     public StringDecoder stringDecoder() {
         return new StringDecoder();
-    }
-
-    @Bean(name = "kameEncoder")
-    public KameEncoder kameEncoder() {
-        return new KameEncoder();
-    }
-
-    @Bean(name = "kameDecoder")
-    public KameDecoder kameDecoder() {
-        return new KameDecoder();
-    }
-
-    /**
-     * Necessary to make the Value annotations work.
-     *
-     * @return
-     */
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
     }
 
 }

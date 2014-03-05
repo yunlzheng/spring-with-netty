@@ -1,8 +1,5 @@
 package com.moo.springnetty.handlers.codec.kame;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Kame Request Data
  * 协议内容
@@ -11,28 +8,32 @@ import java.util.Map;
  * 扩展1(1byte)
  * 扩展2(1byte)
  * 会话ID(4byte)
- * 命令或结果码(4byte)
+ * 命令(4byte)
  * 包长(4byte)
  */
 public class KameRequest {
 
     private byte encode; //编码格式
-
     private byte encrypt; //加密类型
-
     private byte extend1;
-
     private byte extend2;
-
     private int sessionId;
-
     private int command;
 
-    private int length;
 
-    private Map<String, String> params = new HashMap<String, String>();
+    // 默认构造函数
+    public KameRequest() {
+    }
 
-    private String ip;
+    public KameRequest(int command, int sessionId, byte extend1, byte extend2, byte encrypt, byte encode) {
+
+        this.command = command;
+        this.sessionId = sessionId;
+        this.extend2 = extend2;
+        this.extend1 = extend1;
+        this.encrypt = encrypt;
+        this.encode = encode;
+    }
 
     public byte getEncode() {
         return encode;
@@ -82,47 +83,10 @@ public class KameRequest {
         this.command = command;
     }
 
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    public String getValue(String key) {
-        if(key==null) {
-            return null;
-        }
-        return params.get(key);
-    }
-
-    public void setValue(String key, String value) {
-
-        params.put(key, value);
-
-    }
-
-    public Map<String, String> getParams() {
-        return params;
-    }
-
-    public void setParams(Map<String, String> params) {
-        this.params = params;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
     @Override
     public String toString() {
         return "XLRequest [encode=" + encode + ", encrypt=" + encrypt + ", extend1=" + extend1 + ", extend2=" + extend2
-                + ", sessionid=" + sessionId + ", command=" + command + ", length=" + length + ", params=" + params + ", ip=" + ip + "]";
+                + ", sessionid=" + sessionId + ", command=" + command + "]";
     }
 
 }

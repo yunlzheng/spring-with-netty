@@ -2,11 +2,10 @@ package com.moo.springnetty.handlers;
 
 import com.moo.springnetty.handlers.codec.kame.KameRequest;
 import com.moo.springnetty.handlers.codec.kame.KameResponse;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
 
+import io.netty.util.ReferenceCountUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -18,25 +17,34 @@ public class KameServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        KameRequest request = (KameRequest) msg;
+        try {
+            KameRequest request = (KameRequest) msg;
+            System.out.println("Server Reciver Data: "+ msg);
+            KameResponse response = buildResponse();
 
-        // Todo 根据request 调用业务处理方法，并将结果写入response
+            // 返回处理结果response
+            ChannelFuture f = ctx.channel().writeAndFlush(response);
+            f.addListener(ChannelFutureListener.CLOSE);
+        } finally {
+            ReferenceCountUtil.release(msg);
+        }
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
+    }
+
+    public KameResponse buildResponse(){
         KameResponse response = new KameResponse();
-
-        // 返回处理结果response
-        ctx.channel().writeAndFlush(response);
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Channel is active\n");
-        super.channelActive(ctx);
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("\nChannel is disconnected");
-        super.channelInactive(ctx);
+        response.setEncode(new Byte("0"));
+        response.setEncrypt(new Byte("1"));
+        response.setExtend1(new Byte("1"));
+        response.setExtend2(new Byte("2"));
+        response.setResult(4);
+        response.setSessionId(9);
+        return response;
     }
 
 }
